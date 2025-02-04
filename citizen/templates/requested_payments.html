@@ -1,0 +1,226 @@
+{% extends 'citizen_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Requested Payments</h1>
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Pending Payment Requests</h2>
+
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search payments...based on case number or description" onkeyup="filterPayments()">
+
+        <table class="payments-table" id="payments-table">
+            <thead>
+                <tr>
+                    <th>Case Number</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if payments %}
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.case.case_number }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.description }}</td>
+                    <td>
+                        {% if payment.status == 'Pending' %}
+                        <button onclick="startPayment('{{ payment.id }}', '{{ payment.amount }}')" class="chart-button">Pay Now</button>
+                        {% else %}
+                        <button style="color: white; background-color: green;">Paid</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-header {
+    text-align: center;
+    padding: 20px;
+    background-color: #1e3c72;
+    color: white;
+}
+
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.form-section {
+    padding: 20px;
+}
+
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 8px;  /* Reduced padding for smaller height */
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.payments-table th, .payments-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.payments-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+}
+
+.button-container {
+    text-align: center;
+}
+
+button {
+    padding: 10px;
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3e5c92;
+}
+</style>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function filterPayments() {
+    var input, filter, table, tr, td, i, j, txtValue;
+    input = document.getElementById('search-bar');
+    filter = input.value.toUpperCase();
+    table = document.getElementById('payments-table');
+    tr = table.getElementsByTagName('tr');
+
+    for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+        tr[i].style.display = 'none';
+        td = tr[i].getElementsByTagName('td');
+        for (j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                    break;
+                }
+            }
+        }
+    }
+}
+
+function startPayment(paymentId, amount) {
+    fetch("{% url 'create_order' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ payment_id: paymentId, amount: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error creating order: ' + data.error);
+            return;
+        }
+
+        var options = {
+            key: '{{ RAZORPAY_KEY }}',
+            amount: data.amount,
+            currency: 'INR',
+            name: 'eCourt',
+            description: 'Payment for Case ID: ' + paymentId,
+            order_id: data.order_id,
+            handler: function (response) {
+                fetch("{% url 'verify_payment' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Payment Successful!');
+                        window.location.href = "{% url 'requested_payments' %}";
+                    } else {
+                        alert('Payment verification failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error verifying payment:', error);
+                    alert('An error occurred during payment verification.');
+                });
+            },
+            prefill: {
+                name: "{{ request.user.full_name }}",
+                email: "{{ request.user.email }}",
+                contact: "{{ request.user.contact_number }}"
+            },
+            theme: {
+                color: "#1e3c72"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    })
+    .catch(error => {
+        console.error('Error creating order:', error);
+        alert('An error occurred while initiating the payment.');
+    });
+}
+</script>
+<!-- CSRF Token -->
+<input type="hidden" id="csrf_token" value="{{ csrf_token }}">
+{% endblock %}

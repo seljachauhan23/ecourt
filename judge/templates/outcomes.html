@@ -1,0 +1,148 @@
+{% extends 'judge_header.html' %}
+
+{% block content %}
+<!-- Outcomes Page -->
+<div class="dashboard-header">
+    <h1>Record Case Outcome</h1>
+</div>
+
+<!-- Inspirational Quote -->
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "Justice delayed is justice denied." – William E. Gladstone
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Record Final Outcome (verdict)</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-container">
+                <label for="case_id">Select Case:</label>
+                <input type="text" id="case-search" list="case-list" name="case_number" required>
+                <datalist id="case-list">
+                    {% for case in cases %}
+                    {% if case.status != 'CLOSED' and case.status != 'DISMISSED' %}
+                    <option value="{{ case.case_number}}">{{ case.case_number }} - {{ case.case_title }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="input-container">
+                <label for="outcome">Outcome:</label>
+                <textarea id="outcome" name="outcome" rows="4" required></textarea>
+            </div>
+            <div class="submit-btn-container">
+                <button type="submit" class="submit-btn">Record Final Outcome</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Input Container */
+.input-container {
+    margin-bottom: 20px;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-container input, .input-container select, .input-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+textarea {
+    resize: none;
+}
+
+/* Submit Button */
+.submit-btn-container {
+    text-align: center;
+}
+
+.submit-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+
+    .input-container input, .input-container select, .input-container textarea {
+        padding: 8px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    .submit-btn {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}
+</style>
+{% endblock %}

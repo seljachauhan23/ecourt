@@ -1,0 +1,218 @@
+{% extends 'lawyer_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Bank Details</h1>
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Enter Your Bank Details</h2>
+        <form method="POST" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <div class="input-container">
+                <label for="bank_name">Bank Name:</label>
+                <input type="text" id="bank_name" name="bank_name" required value="{{ lawyer.bank_name }}" list="bank-names">
+                <datalist id="bank-names">
+                    <option value="State Bank of India">State Bank of India</option>
+                    <option value="HDFC Bank">HDFC Bank</option>
+                    <option value="ICICI Bank">ICICI Bank</option>
+                    <option value="Axis Bank">Axis Bank</option>
+                    <option value="Punjab National Bank">Punjab National Bank</option>
+                    <option value="Bank of Baroda">Bank of Baroda</option>
+                    <option value="Canara Bank">Canara Bank</option>
+                    <option value="Union Bank of India">Union Bank of India</option>
+                    <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+                    <option value="IndusInd Bank">IndusInd Bank</option>
+                    <option value="Yes Bank">Yes Bank</option>
+                    <option value="IDFC First Bank">IDFC First Bank</option>
+                    <option value="Federal Bank">Federal Bank</option>
+                    <option value="IDBI Bank">IDBI Bank</option>
+                    <option value="RBL Bank">RBL Bank</option>
+                    <option value="Bandhan Bank">Bandhan Bank</option>
+                    <option value="Central Bank of India">Central Bank of India</option>
+                    <option value="Indian Bank">Indian Bank</option>
+                    <option value="Indian Overseas Bank">Indian Overseas Bank</option>
+                    <option value="UCO Bank">UCO Bank</option>
+                    <option value="Bank of India">Bank of India</option>
+                    <option value="Bank of Maharashtra">Bank of Maharashtra</option>
+                    <option value="South Indian Bank">South Indian Bank</option>
+                    <option value="Karur Vysya Bank">Karur Vysya Bank</option>
+                    <option value="DCB Bank">DCB Bank</option>
+                    <option value="City Union Bank">City Union Bank</option>
+                    <option value="Tamilnad Mercantile Bank">Tamilnad Mercantile Bank</option>
+                    <option value="Jammu & Kashmir Bank">Jammu & Kashmir Bank</option>
+                    <option value="Saraswat Bank">Saraswat Bank</option>
+                    <option value="Standard Chartered Bank">Standard Chartered Bank</option>
+                    <option value="HSBC Bank">HSBC Bank</option>
+                    <option value="Citibank">Citibank</option>
+                    <option value="Deutsche Bank">Deutsche Bank</option>
+                    <option value="Barclays Bank">Barclays Bank</option>
+                    <option value="JP Morgan Chase Bank">JP Morgan Chase Bank</option>
+                    <option value="DBS Bank">DBS Bank</option>
+                    <option value="Bank of America">Bank of America</option>
+                    <option value="BNP Paribas">BNP Paribas</option>
+                    <option value="Credit Suisse">Credit Suisse</option>
+                    <option value="Royal Bank of Scotland (RBS)">Royal Bank of Scotland (RBS)</option>
+                    <option value="Australia and New Zealand Banking Group (ANZ)">Australia and New Zealand Banking Group (ANZ)</option>
+                    <option value="Mashreq Bank">Mashreq Bank</option>
+                    <option value="Abu Dhabi Commercial Bank">Abu Dhabi Commercial Bank</option>
+                    <option value="Mizuho Bank">Mizuho Bank</option>
+                    <option value="MUFG Bank">MUFG Bank</option>
+                    <option value="Shinhan Bank">Shinhan Bank</option>
+                    <option value="Kookmin Bank">Kookmin Bank</option>
+                    <option value="KfW IPEX-Bank">KfW IPEX-Bank</option>
+                    <option value="Sumitomo Mitsui Banking Corporation">Sumitomo Mitsui Banking Corporation</option>
+                    <option value="First Abu Dhabi Bank">First Abu Dhabi Bank</option>
+                    <option value="Qatar National Bank">Qatar National Bank</option>
+                    <option value="Equitas Small Finance Bank">Equitas Small Finance Bank</option>
+                    <option value="Ujjivan Small Finance Bank">Ujjivan Small Finance Bank</option>
+                    <option value="AU Small Finance Bank">AU Small Finance Bank</option>
+                    <option value="ESAF Small Finance Bank">ESAF Small Finance Bank</option>
+                    <option value="Fincare Small Finance Bank">Fincare Small Finance Bank</option>
+                    <option value="Jana Small Finance Bank">Jana Small Finance Bank</option>
+                    <option value="Shivalik Small Finance Bank">Shivalik Small Finance Bank</option>
+                    <option value="North East Small Finance Bank">North East Small Finance Bank</option>
+                    <option value="Capital Small Finance Bank">Capital Small Finance Bank</option>
+                    <option value="Suryoday Small Finance Bank">Suryoday Small Finance Bank</option>
+                    <option value="Unity Small Finance Bank">Unity Small Finance Bank</option>
+                    <option value="Karad Urban Co-operative Bank">Karad Urban Co-operative Bank</option>
+                    <option value="Abhyudaya Co-operative Bank">Abhyudaya Co-operative Bank</option>
+                    <option value="Punjab & Sind Bank">Punjab & Sind Bank</option>
+                    <option value="Punjab State Cooperative Bank">Punjab State Cooperative Bank</option>
+                    <option value="Raigad District Cooperative Bank">Raigad District Cooperative Bank</option>
+                    <option value="Prathama Bank">Prathama Bank</option>
+                    <option value="Chaitanya Godavari Gramin Bank">Chaitanya Godavari Gramin Bank</option>
+                    <option value="Sarva Haryana Gramin Bank">Sarva Haryana Gramin Bank</option>
+                    <option value="Vidharbha Konkan Gramin Bank">Vidharbha Konkan Gramin Bank</option>
+                    <option value="Tripura Gramin Bank">Tripura Gramin Bank</option>
+                    <option value="Uttarakhand Gramin Bank">Uttarakhand Gramin Bank</option>
+                    <option value="Karnataka Vikas Grameena Bank">Karnataka Vikas Grameena Bank</option>
+                    <option value="Himachal Pradesh Gramin Bank">Himachal Pradesh Gramin Bank</option>
+                    <option value="Bank of Ceylon">Bank of Ceylon</option>
+                    <option value="ICBC (Industrial and Commercial Bank of China)">ICBC (Industrial and Commercial Bank of China)</option>
+                    <option value="Scotiabank">Scotiabank</option>
+                    <option value="National Bank of Abu Dhabi">National Bank of Abu Dhabi</option>
+                    <option value="Rabobank">Rabobank</option>
+                    <option value="Maybank">Maybank</option>
+                    <option value="OCBC Bank">OCBC Bank</option>
+                    <option value="Union National Bank">Union National Bank</option>
+                    <option value="CIMB Bank">CIMB Bank</option>
+                    <option value="Woori Bank">Woori Bank</option>
+                    <option value="Hongkong and Shanghai Banking Corporation">Hongkong and Shanghai Banking Corporation</option>
+                    <option value="Bangkok Bank">Bangkok Bank</option>
+                    <option value="Al-Ahli Bank of Kuwait">Al-Ahli Bank of Kuwait</option>
+                    <option value="Habib Bank">Habib Bank</option>
+                    <option value="United Overseas Bank">United Overseas Bank</option>
+                    <option value="Lloyds Bank">Lloyds Bank</option>
+                    <option value="National Australia Bank">National Australia Bank</option>
+                </datalist>
+            </div>
+            <div class="input-container">
+                <label for="account_number">Account Number:</label>
+                <input type="text" id="account_number" name="account_number" required value="{{ lawyer.bank_account_number }}">
+            </div>
+            <div class="input-container">
+                <label for="ifsc_code">IFSC Code:</label>
+                <input type="text" id="ifsc_code" name="ifsc_code" required value="{{ lawyer.ifsc_code }}">
+            </div>
+            <div class="input-container">
+                <label for="branch_name">Branch Name:</label>
+                <input type="text" id="branch_name" name="branch_name" required value="{{ lawyer.branch_name }}">
+            </div>
+            <div class="submit-btn-container">
+                <button type="submit" class="submit-btn">Save Details</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 600px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Input Container */
+.input-container {
+    margin-bottom: 15px;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.input-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+/* Submit Button */
+.submit-btn-container {
+    text-align: center;
+}
+
+.submit-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+<script>
+function validateForm() {
+    var accountNumber = document.getElementById('account_number').value;
+    var ifscCode = document.getElementById('ifsc_code').value;
+
+    if (!/^\d+$/.test(accountNumber)) {
+        alert("Account number should contain only digits.");
+        return false;
+    }
+
+    if (!/^[A-Za-z]{4}\d{7}$/.test(ifscCode)) {
+        alert("Invalid IFSC code format.");
+        return false;
+    }
+
+    return true;
+}
+</script>
+{% endblock %}

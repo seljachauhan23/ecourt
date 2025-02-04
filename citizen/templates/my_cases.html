@@ -1,0 +1,528 @@
+{% extends 'citizen_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>My Cases</h1>
+</div>
+
+<!-- Inspirational Quote -->
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "Justice is the first virtue of social institutions." – John Rawls
+</div>
+
+<div class="formcontainer">
+    <!-- Case Summary (Plaintiff and Case Type) -->
+    <div class="form-section">
+        <h2 class="form-title">My Cases</h2>
+
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search cases...based on case title or case type" onkeyup="filterCases()">
+
+        {% if error %}
+        <center><span style="color: red;">{{error}}</span></center>
+        {% endif %}
+
+        <!-- Cases Table -->
+        <table class="cases-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Case Number</th>
+                    <th style="text-align: center;">Case Title</th>
+                    <th style="text-align: center;">Case Type</th>
+                    <th style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cases-table-body">
+                <!-- Static Case Data (Loop through each case's information) -->
+                {% for case in cases %}
+                <tr>
+                    <td style="text-align: center;">{{ case.case_number }}</td>
+                    <td style="text-align: center;">{{ case.case_title }}</td>
+                    <td style="text-align: center;">{{ case.case_type }}</td>
+                    <td style="text-align: center;">
+                        {% if case.lawyer_accepted is False %}
+                        <button class="view-btn" onclick="selectLawyer('{{ case.id }}')">select another lawyer</button>
+                        {% else %}
+                        <button class="view-btn" onclick="toggleCaseDetails('{{ case.id }}')">View</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Full Case Information Card (Hidden Initially) -->
+<div id="case-details-card" class="case-details-card">
+    <div class="formcontainer">
+        <div class="form-section">
+            <h2 class="form-title">Case Information</h2>
+
+            <!-- Case's Detailed Info -->
+            <div id="case-info-details" class="case-info">
+                <!-- Content will be populated dynamically -->
+            </div>
+
+            <!-- Buttons for View_Documents/Upload_Documents -->
+            <div class="button-container">
+                <button onclick="viewDocuments()" class="approve-btn" id="view-doc-btn">View Documents</button>
+                <button onclick="uploadDocument()" class="reject-btn" id="upload-doc-btn" disabled>Upload Document</button>
+                <div style="display: none;">
+                <<button onclick="selectLawyer()" class="reject-btn" id="select-lawyer-btn" style="display: none;" hidden>Select Another Lawyer</button>
+                </div>
+            </div>
+            <button onclick="closeCaseDetails()" class="close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Document Popup -->
+<div id="upload-document-popup" class="popup">
+    <div class="popup-content">
+        <h2>Upload Document</h2>
+        <form action="{% url 'my_cases' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="case-id" name="case_id" />
+            <div class="input-container">
+                <label for="document-type">Document Type:</label>
+                <input type="text" id="document-type" name="document_type" required />
+            </div>
+            <div class="input-container">
+                <label for="file">File:</label>
+                <input type="file" id="file" name="file" required />
+            </div>
+            <div class="submit-btn-container">
+                <button type="submit" name="action" value="upload_document" class="submit-btn">Upload</button>
+            </div>
+        </form>
+        <button onclick="closePopup('upload-document-popup')" class="close-btn">Close</button>
+    </div>
+</div>
+
+<!-- Select Lawyer Popup -->
+<center><div id="select-lawyer-popup" class="popup">
+    <div style="widgth: 100%; height: 35%; margin-left: 50%;"></div>
+    <div class="popup-content">
+        <h2>Select Lawyer</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="case-id" name="case_id" />
+            <div class="input-container">
+                <label for="assigned-lawyer">Assigned Lawyer:</label>
+                <input type="text" id="assigned-lawyer" name="assigned_lawyer" list="lawyers" required />
+                <datalist id="lawyers">
+                    {% for lawyer in Lawyers %}
+                        <option value="{{ lawyer.user.full_name }}">{{ lawyer.user.email }}</option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <div class="submit-btn-container">
+                <button type="submit" name="action" value="select_lawyer" class="submit-btn">Select Lawyer</button>
+            </div>
+        </form>
+        <button onclick="closePopup('select-lawyer-popup')" class="close-btn">Close</button>
+    </div>
+</div></center>
+
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Cases Table */
+.cases-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cases-table th, .cases-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.cases-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+}
+
+/* Case Details Card (Initially Hidden) */
+.case-details-card {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Case Detailed Info */
+.case-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    flex: 1 1 calc(33% - 20px); /* Each item takes up one-third of the width */
+    min-width: 200px;
+    margin-bottom: 10px;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Add gap between the buttons */
+    margin-top: 20px;
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1; /* Allow buttons to take equal space */
+}
+
+button:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button */
+.close-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+}
+
+.close-btn:hover {
+    background: #c0392b;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.input-container {
+    margin-bottom: 15px;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.input-container input[type="text"],
+.input-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.submit-btn-container {
+    text-align: center;
+}
+
+.submit-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+
+    .info-item {
+        flex: 1 1 calc(50% - 20px); /* Stacks two items per row on smaller screens */
+    }
+
+    .view-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+
+    .info-item {
+        flex: 1 1 100%; /* Stacks all items vertically on very small screens */
+    }
+}
+</style>
+
+<script>
+    // Function to filter cases based on search input
+    function filterCases() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById('search-bar');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('cases-table-body');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            tr[i].style.display = 'none';
+            td = tr[i].getElementsByTagName('td');
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Function to toggle the case details card and populate information dynamically
+    function toggleCaseDetails(caseId) {
+        var caseData = {
+            {% for case in cases %}
+            "{{ case.id }}": {
+                "caseNumber": "{{ case.case_number }}",
+                "plaintiff": "{{ case.plaintiff.user.full_name }}",
+                "defendant": "{{ case.defendant.user.full_name }}",
+                "caseTitle": "{{ case.case_title }}",
+                "caseType": "{{ case.case_type }}",
+                "status": "{{ case.status }}",
+                "lawyer": {% if case.assigned_lawyer %}"{{ case.assigned_lawyer.user.full_name }}"{% else %}null{% endif %},
+                "lawyer_accepted": {% if case.lawyer_accepted is not None %}{{ case.lawyer_accepted|yesno:"true,false" }}{% else %}null{% endif %},
+                "assigned_judge": {% if case.assigned_judge %}true{% else %}false{% endif %}
+            },
+            {% endfor %}
+        };
+
+        var caseInfo = caseData[caseId];
+        var caseDetailsCard = document.getElementById('case-info-details');
+
+        // Build the initial HTML content for common details
+        var detailsHTML = `
+            <div class="info-item"><strong>Case Number:</strong> ${caseInfo.caseNumber}</div>
+            <div class="info-item"><strong>Plaintiff:</strong> ${caseInfo.plaintiff}</div>
+            <div class="info-item"><strong>Defendant:</strong> ${caseInfo.defendant}</div>
+            <div class="info-item"><strong>Case Title:</strong> ${caseInfo.caseTitle}</div>
+            <div class="info-item"><strong>Case Type:</strong> ${caseInfo.caseType}</div>
+            <div class="info-item"><strong>Status:</strong> ${caseInfo.status}</div>
+        `;
+
+        // Add lawyer details only if a lawyer is assigned
+        if (caseInfo.lawyer !== null) {
+            // Determine the acceptance status of the lawyer
+            var lawyerAcceptedMessage = '';
+            var lawyerAcceptedColor = '';
+            if(caseInfo.status != 'ACTIVE' && caseInfo.status != 'PENDING' && caseInfo.assigned_lawyer != true){
+                document.getElementById('upload-doc-btn').style.display = 'none';
+            }
+
+            if (caseInfo.lawyer_accepted === true) {
+                lawyerAcceptedMessage = 'Accepted';
+                lawyerAcceptedColor = 'green';
+                document.getElementById('upload-doc-btn').disabled = false;
+                document.getElementById('select-lawyer-btn').style.display = 'none';
+            } else if (caseInfo.lawyer_accepted === false) {
+                lawyerAcceptedMessage = 'Not Accepted';
+                lawyerAcceptedColor = 'red';
+                document.getElementById('upload-doc-btn').disabled = true;
+                document.getElementById('upload-doc-btn').style.display = 'none';
+                document.getElementById('select-lawyer-btn').style.display = 'block';
+            } else {
+                lawyerAcceptedMessage = 'Pending';
+                lawyerAcceptedColor = 'orange';
+                document.getElementById('upload-doc-btn').disabled = true;
+                document.getElementById('upload-doc-btn').style.display = 'none';
+                document.getElementById('select-lawyer-btn').style.display = 'block';
+            }
+
+            // Append lawyer details and acceptance status
+            detailsHTML += `
+                <div class="info-item"><strong>Lawyer:</strong> ${caseInfo.lawyer}</div>
+                <div class="info-item"><strong>Lawyer Acceptance Status:</strong> 
+                    <span style="color: ${lawyerAcceptedColor};">
+                        ${lawyerAcceptedMessage}
+                    </span>
+                </div>
+            `;
+        }
+
+        // Update the case details card with the final HTML content
+        caseDetailsCard.innerHTML = detailsHTML;
+
+        // Display the case details card and set the selected case ID
+        document.getElementById('case-details-card').style.display = 'flex';
+        document.getElementById('case-id').value = caseId;
+
+        // Hide the select lawyer button if a judge is assigned
+        if (caseInfo.assigned_judge || caseInfo.assigned_lawyer || caseInfo.lawyer_accepted === true) {
+            document.getElementById('select-lawyer-btn').style.display = 'none';
+        } else {
+            document.getElementById('select-lawyer-btn').style.display = 'block';
+        }
+    }
+
+    // Function to close the case details card
+    function closeCaseDetails() {
+        document.getElementById('case-details-card').style.display = 'none';
+    }
+
+    // Function to view documents
+    function viewDocuments() {
+        var caseId = document.getElementById('case-id').value;
+        window.location.href = "{% url 'case_documents' %}?case_id=" + caseId;
+    }
+
+    // Function to upload a document
+    function uploadDocument() {
+        document.getElementById('upload-document-popup').style.display = 'flex';
+    }
+    
+     // Function to open the Select Lawyer Popup and pass the case ID in the query
+    function selectLawyer(caseId) {
+        // Construct the URL with the case ID as a query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('case_id', caseId); // Add case_id to the query parameters
+
+        // Set the updated query string in the URL
+        window.history.pushState({}, '', `${window.location.pathname}?${urlParams}`);
+
+        // Set the case ID to the hidden input field
+        document.getElementById('case-id').value = caseId;
+        
+        // Show the popup by changing its display style to block
+        document.getElementById('select-lawyer-popup').style.display = 'block';
+    }
+
+    // Function to get the case ID from the query parameter and set it in the popup
+    function getCaseIdFromQuery() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('case_id');
+    }
+
+    // Function to close the popup
+    function closePopup(popupId) {
+        document.getElementById(popupId).style.display = 'none';
+    }
+
+    // On page load, check for the case_id in the query string and set it if exists
+    window.onload = function() {
+        const caseId = getCaseIdFromQuery();
+        if (caseId) {
+            document.getElementById('case-id').value = caseId;
+        }
+    };
+
+    // Function to close a popup
+    function closePopup(popupId) {
+        document.getElementById(popupId).style.display = 'none';
+    }
+</script>
+{% endblock %}

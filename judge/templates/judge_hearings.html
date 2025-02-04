@@ -1,0 +1,342 @@
+{% extends 'judge_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Hearing Details</h1>
+</div>
+
+<!-- Inspirational Quote -->
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "Justice delayed is justice denied." – William E. Gladstone
+</div>
+
+<div class="formcontainer">
+    <!-- Case's Hearing Summary (Plaintiff Name and Case Type) -->
+    <div class="form-section">
+        <h2 class="form-title">Hearing Information</h2>
+
+        <!-- Dynamic Hearing Data (Loop through each hearing's information) -->
+        {% for hearing in hearings %}
+        <div class="hearing-summary">
+            <div class="summary-item">
+                <strong>Case Number:</strong> {{ hearing.case.case_number }}
+            </div>
+            <div class="summary-item">
+                <strong>Case Type:</strong> {{ hearing.case.case_type }}
+            </div>
+            <div class="view-btn-container">
+                <button class="view-btn" 
+                        onclick="toggleHearingDetails(this)" 
+                        data-case-id="{{ hearing.id }}" 
+                        data-judge-name="{{ hearing.case.assigned_judge.user.full_name }}" 
+                        data-case-number="{{ hearing.case.case_number }}" 
+                        data-plaintiff="{{ hearing.case.plaintiff.user.full_name }}"
+                        data-defendant="{{ hearing.case.defendant.user.full_name }}"
+                        data-plaintiff-lawyer="{{ hearing.case.assigned_lawyer.user.full_name }}"
+                        data-defendant-lawyer="{{ hearing.case.defendant_lawyer.user.full_name }}"
+                        data-date="{{ hearing.date }}" 
+                        data-time="{{ hearing.time }}" 
+                        data-status="{{ hearing.status }}"
+                        data-outcome="{{ hearing.outcome }}">
+                    View
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Full Hearing Information Card (Hidden Initially) -->
+<div id="hearing-details-card" class="hearing-details-card">
+    <div class="hearing-details-container">
+        <div class="form-section">
+            <h2 class="form-title">Hearing Details</h2>
+
+            <!-- Hearing's Detailed Info -->
+            <div id="hearing-info-details" class="hearing-info">
+                <!-- Content will be populated dynamically -->
+            </div>
+
+            <!-- Outcome Form for Hearing -->
+            <form method="POST" action="{% url 'submit_hearing_outcome' %}" id="outcome-form" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" id="hearing-id" name="hearing_id" value="">
+                <div class="outcome-form-container">
+                    <label for="hearing-outcome">Enter Outcome:</label>
+                    <textarea id="hearing-outcome" name="outcome" class="outcome-textarea" placeholder="Write the outcome of the hearing..."></textarea>
+                    <button type="submit" class="submit-outcome-btn">Submit Outcome</button>
+                </div>
+            </form>
+
+            <!-- Videocall URL Form -->
+            <form method="POST" action="{% url 'submit_videocall_url' %}" id="videocall-form">
+                {% csrf_token %}
+                <input type="hidden" id="videocall-hearing-id" name="hearing_id" value="">
+                <div class="videocall-form-container">
+                    <label for="videocall-url">Videocall URL:</label>
+                    <input type="url" id="videocall-url" name="videocall_url" placeholder="Enter Videocall URL" class="videocall-input">
+                    <button type="submit" class="submit-videocall-btn">Submit URL</button>
+                </div>
+            </form>
+
+            <button onclick="closeHearingDetails()" class="close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Hearing Summary Info (One Row) */
+.hearing-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    font-size: 1rem;
+    margin-right: 20px;
+}
+
+.view-btn-container {
+    text-align: right;
+}
+
+.view-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.view-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Hearing Details Card (Initially Hidden) */
+.hearing-details-card {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hearing Details Container */
+.hearing-details-container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    width: 80%;
+    max-width: 900px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Hearing Detailed Info */
+.hearing-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    flex: 1 1 calc(33% - 20px); /* Each item takes up one-third of the width */
+    min-width: 200px;
+    margin-bottom: 10px;
+}
+
+/* Outcome Form */
+.outcome-form-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.outcome-textarea {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    height: 150px;
+    resize: none;
+}
+
+.submit-outcome-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-outcome-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Videocall Form */
+.videocall-form-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.videocall-input {
+    padding: 10px;
+    width: 80%;
+    max-width: 500px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.submit-videocall-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-videocall-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button */
+.close-btn {
+    background: linear-gradient(to right, #ff4e00, #ff3a00);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.close-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+<script>
+function toggleHearingDetails(button) {
+    const hearingDetails = {
+        caseId: button.getAttribute('data-case-id'),
+        judgeName: button.getAttribute('data-judge-name'),
+        caseNumber: button.getAttribute('data-case-number'),
+        plaintiff: button.getAttribute('data-plaintiff'),
+        defendant: button.getAttribute('data-defendant'),
+        plaintiff_lawyer: button.getAttribute('data-plaintiff-lawyer'),
+        defendant_lawyer: button.getAttribute('data-defendant-lawyer'),
+        date: button.getAttribute('data-date'),
+        time: button.getAttribute('data-time'),
+        status: button.getAttribute('data-status'),
+        outcome: button.getAttribute('data-outcome')
+    };
+
+    // Populate the hearing info card
+    const hearingInfoDetails = document.getElementById("hearing-info-details");
+    hearingInfoDetails.innerHTML = `
+        <div class="info-item"><strong>Judge:</strong> ${hearingDetails.judgeName}</div>
+        <div class="info-item"><strong>Case:</strong> ${hearingDetails.caseNumber}</div>
+        <div class="info-item"><strong>plaintiff:</strong> ${hearingDetails.plaintiff}</div>
+        <div class="info-item"><strong>defendant:</strong> ${hearingDetails.defendant}</div>
+        <div class="info-item"><strong>plaintiff_lawyer:</strong> ${hearingDetails.plaintiff_lawyer}</div>
+        <div class="info-item"><strong>defendant_lawyer:</strong> ${hearingDetails.defendant_lawyer}</div>
+        <div class="info-item"><strong>Date:</strong> ${hearingDetails.date}</div>
+        <div class="info-item"><strong>Time:</strong> ${hearingDetails.time}</div>
+        <div class="info-item"><strong>Status:</strong> ${hearingDetails.status}</div>
+        <div class="info-item"><strong>Outcome:</strong> ${hearingDetails.outcome}</div>
+    `;
+
+    // Set hearing id for forms
+    document.getElementById('hearing-id').value = hearingDetails.caseId;
+    document.getElementById('videocall-hearing-id').value = hearingDetails.caseId;
+
+    // Show the hearing details card
+    document.getElementById("hearing-details-card").style.display = 'flex';
+}
+
+function closeHearingDetails() {
+    document.getElementById("hearing-details-card").style.display = 'none';
+}
+
+// Hide video link form and show outcome form after submitting video link
+document.getElementById('videocall-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('videocall-form').style.display = 'none';
+            document.getElementById('outcome-form').style.display = 'block';
+        } else {
+            alert('Failed to submit video link');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>
+{% endblock %}

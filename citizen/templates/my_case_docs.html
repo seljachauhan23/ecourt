@@ -1,0 +1,96 @@
+{% extends 'my_cases.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>{{request.session.case_number}}</h1>
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Documents</h2>
+        <div id="documents-list">
+            {% if documents %}
+                {% for document in documents %}
+                <div class="document-item">
+                    <div><strong>Uploaded By:</strong> {{ document.uploaded_by.username }}({{document.uploaded_by.user_type}})</div>
+                    <div><strong>Type:</strong> {{ document.document_type }}</div>
+                    <div><strong>Name:</strong> {{ document.file.name }}</div>
+                    <a href="{{ document.file.url }}" target="_blank" class="view-btn">View</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-documents">
+                    <p>Oops! No documents available.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.formcontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.form-section {
+    width: 80%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.document-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.document-item div {
+    margin-bottom: 10px;
+}
+
+.view-btn, .button {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.view-btn:hover, .button:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.no-documents {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+}
+</style>
+{% endblock %}

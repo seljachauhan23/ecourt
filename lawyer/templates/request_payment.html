@@ -1,0 +1,129 @@
+{% extends 'lawyer_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Request Payment</h1>
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Request Payment for Case Hearing</h2>
+        <form id="payment-request-form" method="post">
+            {% csrf_token %}
+            <div class="input-container">
+                <label for="case-id">Case Title:</label>
+                <input type="hidden" id="case-id" name="case_id" value="{{ case.id }}" readonly />
+                
+                <input type="text" id="case-id" name="case_title" value="{{ case.case_title }}" readonly />
+            </div>
+            <div class="input-container">
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" required />
+            </div>
+             <div class="input-container">
+                <label for="amount">Amount you'll recieve after 10% platform service fee:</label>
+                <input type="number" id="recievable_amount" name="recievable_amount" readonly required />
+            </div>
+            <div class="input-container">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" style="resize: none;" required></textarea>
+            </div>
+            <input type="hidden" id="current-datetime" name="current_datetime" />
+            <div class="button-container">
+                <button type="submit" class="chart-button">Request Payment</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-header {
+    text-align: center;
+    padding: 20px;
+    background-color: #1e3c72;
+    color: white;
+}
+
+.formcontainer {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.form-section {
+    padding: 20px;
+}
+
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    margin-bottom: 15px;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.input-container input,
+.input-container textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.button-container {
+    text-align: center;
+}
+
+button {
+    padding: 10px;
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3e5c92;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var currentDateTime = new Date().toISOString();
+    document.getElementById('current-datetime').value = currentDateTime;
+});
+ // Get input elements
+const inputBox = document.getElementById("amount");
+const outputBox = document.getElementById("recievable_amount");
+
+// Add event listener to update the second text box
+inputBox.addEventListener("input", function () {
+    let amount = parseFloat(inputBox.value) || 0; // Convert input to a number, default to 0 if empty
+    outputBox.value = amount - ((amount * 10) / 100); // Calculate 10% and update the second box
+});
+</script>
+{% endblock %}

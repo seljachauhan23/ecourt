@@ -1,0 +1,328 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Analytics Dashboard</h1>
+</div>
+
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "In God we trust. All others must bring data." – W. Edwards Deming
+</div>
+
+<div class="formcontainer">
+    <!-- Left Section for Illustration -->
+    <div class="gif-section">
+        <img src="/media/analytics.gif" alt="Analytics Illustration">
+    </div>
+
+    <!-- Right Section for Analytics Options -->
+    <div class="form-section">
+        <h2 class="form-title">Explore Data Insights</h2>
+        <div class="button-container">
+            <button onclick="showGraphOptions('cases')">Analyze Cases</button>
+            <button onclick="showGraphOptions('lawyers')">Analyze Lawyers</button>
+            <button onclick="showGraphOptions('judges')">Analyze Judges</button>
+            <button onclick="showGraphOptions('citizens')">Analyze Citizens</button>
+            <button onclick="showGraphOptions('caseTypes')">Analyze Case Types</button>
+            <button onclick="showGraphOptions('monthlyCases')">Monthly Cases</button>
+            <button onclick="showGraphOptions('hearings')">Analyze Hearings</button>
+            <button onclick="showGraphOptions('documents')">Analyze Documents</button>
+            <button onclick="showGraphOptions('payments')">Analyze Payments</button>
+        </div>
+    </div>
+</div>
+
+<!-- Graph Options Modal -->
+<div id="graph-options-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('graph-options-modal')">&times;</span>
+        <h3>Select Graph Type</h3>
+        <button onclick="showChart('bar')">Bar Chart</button>
+        <button onclick="showChart('line')">Line Chart</button>
+        <button onclick="showChart('pie')">Pie Chart</button>
+        <button onclick="showChart('doughnut')">Doughnut Chart</button>
+        </div>
+    </div>
+
+    <!-- Graph Display Modal -->
+    <div id="graph-display-modal" class="modal">
+        <div class="modal-content">
+        <span class="close" onclick="closeModal('graph-display-modal')">&times;</span>
+        <canvas id="chartCanvas" class="chart"></canvas>
+        </div>
+    </div>
+    <style>
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .modal-content button {
+        width: 20%; /* Make buttons take full width of the modal content */
+    }
+</style>
+<style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-header {
+    text-align: center;
+    padding: 20px;
+    background-color: #1e3c72;
+    color: white;
+}
+
+.formcontainer {
+    display: flex;
+    flex-direction: row;
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.gif-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.gif-section img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.form-section {
+    flex: 1;
+    padding: 20px;
+}
+
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    padding: 10px;
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3e5c92;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.chart-button {
+    padding: 10px;
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+.chart-button:hover {
+    background-color: #3e5c92;
+}
+
+/* Chart */
+.chart {
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        flex-direction: column;
+    }
+
+    .gif-section {
+        display: none;
+    }
+
+    .formcontainer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('/media/analytics.gif') no-repeat center center/cover;
+        opacity: 0.1;
+        z-index: -1;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let currentData = null;
+    let chartInstance = null;
+
+    function showGraphOptions(dataType) {
+        switch (dataType) {
+            case 'cases':
+                currentData = JSON.parse('{{ cases_data|escapejs }}');
+                break;
+            case 'lawyers':
+                currentData = JSON.parse('{{ lawyers_data|escapejs }}');
+                break;
+            case 'judges':
+                currentData = JSON.parse('{{ judges_data|escapejs }}');
+                break;
+            case 'citizens':
+                currentData = JSON.parse('{{ citizens_data|escapejs }}');
+                break;
+            case 'caseTypes':
+                currentData = JSON.parse('{{ case_types_data|escapejs }}');
+                break;
+            case 'monthlyCases':
+                currentData = JSON.parse('{{ monthly_cases_data|escapejs }}');
+                break;
+            case 'hearings':
+                currentData = JSON.parse('{{ hearings_data|escapejs }}');
+                break;
+            case 'documents':
+                currentData = JSON.parse('{{ documents_data|escapejs }}');
+                break;
+            case 'payments':
+                currentData = JSON.parse('{{ payments_data|escapejs }}');
+                break;
+        }
+        document.getElementById('graph-options-modal').style.display = 'flex';
+    }
+
+    function showChart(chartType) {
+        document.getElementById('graph-options-modal').style.display = 'none';
+        document.getElementById('graph-display-modal').style.display = 'flex';
+
+        const ctx = document.getElementById('chartCanvas').getContext('2d');
+
+        // Clear previous chart if it exists
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        // Render the new chart
+        chartInstance = new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: currentData.labels,
+                datasets: [{
+                    label: currentData.label,
+                    data: currentData.data,
+                    backgroundColor: [
+                        'rgba(30, 60, 114, 0.7)',
+                        'rgba(42, 82, 152, 0.7)',
+                        'rgba(60, 120, 180, 0.7)',
+                        'rgba(80, 160, 200, 0.7)',
+                        'rgba(100, 200, 220, 0.7)',
+                        'rgba(120, 220, 240, 0.7)',
+                        'rgba(140, 240, 255, 0.7)',
+                        'rgba(160, 255, 255, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(30, 60, 114, 1)',
+                        'rgba(42, 82, 152, 1)',
+                        'rgba(60, 120, 180, 1)',
+                        'rgba(80, 160, 200, 1)',
+                        'rgba(100, 200, 220, 1)',
+                        'rgba(120, 220, 240, 1)',
+                        'rgba(140, 240, 255, 1)',
+                        'rgba(160, 255, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+</script>
+
+{% endblock %}

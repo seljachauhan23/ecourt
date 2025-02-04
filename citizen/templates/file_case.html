@@ -1,0 +1,161 @@
+{% extends 'citizen_header.html' %}
+
+{% block content %}
+<div class="efiling-container">
+    <div class="dashboard-header">
+        <h1>File a Case</h1>
+    </div>
+
+    <div class="formcontainer">
+        <div class="form-section">
+            <h2 class="form-title">Case Details</h2>
+
+            <form action="{% url 'file_cases' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-container">
+                    <label for="case-title">Case Title:</label>
+                    <input type="text" id="case-title" name="case_title" required />
+                </div>
+
+                <div class="input-container">
+                    <label for="case-type">Case Type:</label>
+                    <select id="case-type" name="case_type" required>
+                        <option value="Civil">Civil</option>
+                        <option value="Criminal">Criminal</option>
+                        <option value="Family">Family</option>
+                        <!-- Add more case types as needed -->
+                    </select>
+                </div>
+
+                <div class="input-container">
+                    <label for="case-description">Case Description:</label>
+                    <textarea id="case-description" name="case_description" rows="4" required></textarea>
+                </div>
+
+                <div class="input-container">
+                    <label for="defendant">Defendant:</label>
+                    <input type="text" id="defendant" name="defendant" list="defendants" required />
+                    <datalist id="defendants">
+                        {% for defendant in defendants %}
+                            <option value="{{ defendant.user.full_name }}">{{ defendant.user.email }}</option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+
+                <div class="input-container">
+                    <label for="assigned-lawyer">Assigned Lawyer:</label>
+                    <input type="text" id="assigned-lawyer" name="assigned_lawyer" list="lawyers" />
+                    <datalist id="lawyers">
+                        {% for lawyer in Lawyers %}
+                            <option value="{{ lawyer.user.full_name }}">{{ lawyer.user.email }}</option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+
+                <div class="input-container">
+                    <label for="case-documents">Case Documents:</label>
+                    <input type="file" id="case-documents" name="case_documents" multiple />
+                </div>
+
+                <div class="submit-btn-container">
+                    <button type="submit" class="submit-btn">Submit Case</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Input Containers */
+.input-container {
+    margin-bottom: 20px;
+}
+
+.input-container label {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.input-container input,
+.input-container select,
+.input-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+textarea {
+    resize: none;
+}
+
+/* Submit Button */
+.submit-btn-container {
+    text-align: center;
+}
+
+.submit-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    .submit-btn {
+        font-size: 1rem;
+        padding: 12px;
+    }
+}
+</style>
+
+{% endblock %}

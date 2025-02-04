@@ -1,0 +1,355 @@
+{% extends 'judge_header.html' %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        background-color: #f4f7f9;
+    }
+
+    .formcontainer {
+        max-width: 900px;
+        margin: auto;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        padding: 30px;
+    }
+
+    .form-title {
+        text-align: center;
+        color: #1e3c72;
+        margin-bottom: 20px;
+    }
+
+    .case-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .case-table th, .case-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .case-table th {
+       background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+    }
+
+    .view-btn {
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .view-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .case-details-card {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .case-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        flex: 1 1 calc(50% - 20px);
+        margin-bottom: 10px;
+    }
+
+    .status-dropdown {
+        width: 50%;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-top: 5px;
+        transition: border-color 0.3s ease;
+    }
+
+    .status-dropdown:focus {
+        outline: none;
+        border-color: #1e3c72;
+        box-shadow: 0 0 5px rgba(30, 60, 114, 0.5);
+    }
+
+    .close-btn {
+        background: #e74c3c;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        display: block;
+        width: 100%;
+    }
+
+    .close-btn:hover {
+        background: #c0392b;
+    }
+
+    .submit-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    /* Status Button Styles */
+    .status-btn {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        border: none;
+        cursor: default;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .status-pending {
+        background-color: #ffeb3b; /* Yellow */
+        color: black;
+    }
+
+    .status-active {
+        background-color: #4caf50; /* Green */
+    }
+
+    .status-closed {
+        background-color: #9e9e9e; /* Grey */
+    }
+
+    .status-dismissed {
+        background-color: #f44336; /* Red */
+    }
+
+    @media (min-width: 768px) {
+    .info-item {
+        flex: 1 1 calc(50% - 20px);
+    }
+
+    .btns {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .info-item {
+        flex: 1 1 calc(50% - 20px);
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-item {
+        flex: 1 1 100%;
+    }
+}
+
+    /* Search Bar Styles */
+    .search-bar {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-bar:focus {
+        outline: none;
+        border-color: #1e3c72;
+        box-shadow: 0 0 5px rgba(30, 60, 114, 0.5);
+    }
+
+    /* Button Container */
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="dashboard-header">
+    <h1>Assigned Cases</h1>
+</div>
+
+<!-- Inspirational Quote -->
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "Injustice anywhere is a threat to justice everywhere." – Martin Luther King Jr.
+</div>
+
+<div class="formcontainer">
+    <h2 class="form-title">Assigned Cases</h2>
+
+    <!-- Search Bar -->
+    <input type="text" id="search-bar" class="search-bar" placeholder="Search cases...based on case number, case title, or case type" onkeyup="filterCases()">
+
+    <table class="case-table">
+        <thead>
+            <tr>
+                <th>Case Number</th>
+                <th>Case Title</th>
+                <th>Case Type</th>
+                <th>Plaintiff</th>
+                <th>Defendant</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="cases-table-body">
+            {% for case in cases %}
+            <tr>
+                <td>{{ case.case_number }}</td>
+                <td>{{ case.case_title }}</td>
+                <td>{{ case.case_type }}</td>
+                <td>{{ case.plaintiff.user.full_name }}</td>
+                <td>{{ case.defendant.user.full_name }}</td>
+                <td><button class="status-btn status-{{ case.status|lower }}">{{ case.status }}</button></td>
+                <td style="text-align: center;">
+                    {% if case.status == 'DISMISSED' %}
+                    <button class="view-btn" style="background: red;">DISMISSED</button>
+                    {% else %}
+                    <button class="view-btn" onclick="toggleCaseDetails('{{ case.id }}')">View</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="case-details-card" class="case-details-card">
+    <div class="formcontainer">
+        <h2 class="form-title">Case Information</h2>
+
+        <div id="case-info-details" class="case-info">
+            <!-- Content populated dynamically -->
+        </div>
+
+        <form method="post" action="{% url 'update_case_status' %}" id="update-status-form">
+            {% csrf_token %}
+            <input type="hidden" name="case_id" id="case-id">
+            <div class="info-item" id="status-dropdown-container">
+                <label for="case-status-dropdown"><strong>Update Status:</strong></label>
+                <select id="case-status-dropdown" name="new_status" class="status-dropdown">
+                    <option value="PENDING">PENDING</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="CLOSED">CLOSED</option>
+                    <option value="DISMISSED">DISMISSED</option>
+                </select>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="view-btn btns" id="update-status-btn">Update</button>
+                <button type="button" onclick="viewDocuments()" class="view-btn btns">View Documents</button>
+            </div>
+        </form>
+        <button onclick="closeCaseDetails()" class="close-btn">Close</button>
+    </div>
+</div>
+
+<script>
+    const caseData = {
+        {% for case in cases %}
+        '{{ case.id }}': {
+            caseNumber: '{{ case.case_number }}',
+            caseTitle: '{{ case.case_title }}',
+            caseType: '{{ case.case_type }}',
+            plaintiff: '{{ case.plaintiff.user.full_name }}',
+            defendant: '{{ case.defendant.user.full_name }}',
+            status: '{{ case.status }}',
+        },
+        {% endfor %}
+    };
+
+    function filterCases() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById('search-bar');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('cases-table-body');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            tr[i].style.display = 'none';
+            td = tr[i].getElementsByTagName('td');
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    function toggleCaseDetails(caseId) {
+        const caseInfo = caseData[caseId];
+        document.getElementById('case-info-details').innerHTML = `
+            <div class="info-item"><strong>Case Number:</strong> ${caseInfo.caseNumber}</div>
+            <div class="info-item"><strong>Case Title:</strong> ${caseInfo.caseTitle}</div>
+            <div class="info-item"><strong>Case Type:</strong> ${caseInfo.caseType}</div>
+            <div class="info-item"><strong>Plaintiff:</strong> ${caseInfo.plaintiff}</div>
+            <div class="info-item"><strong>Defendant:</strong> ${caseInfo.defendant}</div>
+            <div class="info-item"><button class="status-btn status-${caseInfo.status.toLowerCase()}"><strong>Status:</strong> ${caseInfo.status}</button></div>
+        `;
+        document.getElementById('case-id').value = caseId;
+        document.getElementById('case-status-dropdown').value = caseInfo.status;
+        document.getElementById('case-details-card').style.display = 'flex';
+
+        const updateStatusBtn = document.getElementById('update-status-btn');
+        const statusDropdownContainer = document.getElementById('status-dropdown-container');
+        if (caseInfo.status === 'DISMISSED' || caseInfo.status === 'CLOSED') {
+            updateStatusBtn.style.display = 'none';
+            statusDropdownContainer.style.display = 'none';
+        } else {
+            updateStatusBtn.style.display = 'block';
+            statusDropdownContainer.style.display = 'block';
+        }
+    }
+
+    function viewDocuments() {
+        const caseId = document.getElementById('case-id').value;
+        window.location.href = "{% url 'case_docs' %}?case_id=" + caseId;
+    }
+
+    function closeCaseDetails() {
+        document.getElementById('case-details-card').style.display = 'none';
+        document.getElementById('case-info-details').innerHTML = '';
+    }
+</script>
+{% endblock %}

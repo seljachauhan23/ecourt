@@ -1,0 +1,44 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<!-- Case Status Header Section -->
+<div class="dashboard-header">
+    <h1>Case Status</h1>
+</div>
+
+<!-- Case Status Cards -->
+<div class="dashboard-container">
+    <!-- Pending Case Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">⏳</div>
+        <h3>Pending Cases</h3>
+        <p>Manage and review cases that are still pending.</p>
+        <a href="{% url 'pending_cases' %}" class="btn">View Pending Cases</a>
+    </div>
+
+    <!-- Active Case Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">⚖️</div>
+        <h3>Active Cases</h3>
+        <p>Track cases that are currently active and ongoing.</p>
+        <a href="{% url 'active_cases' %}" class="btn">View Active Cases</a>
+    </div>
+
+    <!-- Closed Case Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">✔️</div>
+        <h3>Closed Cases</h3>
+        <p>View cases that have been closed and resolved.</p>
+        <a href="{% url 'closed_cases' %}" class="btn">View Closed Cases</a>
+    </div>
+
+    <!-- Dismissed Case Card -->
+    <div class="dashboard-card">
+        <div class="card-icon">🚫</div>
+        <h3>Dismissed Cases</h3>
+        <p>View cases that have been dismissed or dropped.</p>
+        <a href="{% url 'dismissed_cases' %}" class="btn">View Dismissed Cases</a>
+    </div>
+</div>
+
+{% endblock %}

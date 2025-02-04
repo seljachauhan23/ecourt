@@ -1,0 +1,199 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<!-- Profile Header Section -->
+<div class="dashboard-header">
+    <h1 class="dashboard-title">Admin Profile</h1>
+    <p class="dashboard-subtitle">Manage your details and keep them up-to-date</p>
+</div>
+
+<div class="profile-container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-content">
+            <!-- Profile Image on the Left -->
+            <div class="profile-image">
+                <img src="/media/{{ user.profile_picture }}" alt="Profile Image" class="profile-img">
+            </div>
+            <!-- Profile Details on the Right -->
+            <div class="profile-info">
+                <table class="profile-table">
+                    <tr>
+                        <th><i class="fas fa-user-circle"></i> Username:</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-envelope"></i> Email:</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-phone"></i> Contact Number:</th>
+                        <td>{{ user.contact_number }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!-- Edit Profile Button Below Details -->
+        <div class="edit-profile">
+            <a href="{% url 'edit_profile' %}">
+                <button class="edit-btn">
+                    Edit Profile
+                </button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome CDN -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Dashboard Header Styles */
+    .dashboard-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .dashboard-subtitle {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    /* Profile Section Styles */
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f4f7f9;
+        min-height: calc(100vh - 120px);
+        padding: 20px;
+    }
+
+    .profile-section {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        padding: 20px;
+        margin-top: -100px;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        max-width: 1000px;
+        width: 100%;
+        display: flex;
+        flex-direction: column; /* Stack profile image and details */
+        gap: 10px; /* Space between sections */
+        align-items: center;
+        animation: zoomIn 0.8s ease-in-out;
+    }
+
+    .profile-content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        width: 100%;
+    }
+
+    .profile-image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-image img {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 5px solid #2a5298;
+        object-fit: cover;
+        animation: pulse 2s infinite;
+    }
+
+    .profile-info {
+        flex: 2;
+        width: 100%;
+        text-align: left;
+    }
+
+    .profile-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .profile-table th,
+    .profile-table td {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .profile-table th {
+        color: #2a5298;
+        font-weight: bold;
+        width: 40%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-table td {
+        color: #333;
+        word-wrap: break-word;
+    }
+
+    /* Edit Profile Button */
+    .edit-profile {
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .edit-profile .edit-btn {
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        color: white;
+        padding: 15px 40px; /* Adjusted padding */
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        width: 250%; /* Set width to 100% to match the table width */
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .edit-profile .edit-btn:hover {
+        background: linear-gradient(90deg, #2a5298, #1e3c72);
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Animations */
+    @keyframes zoomIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+</style>
+{% endblock %}

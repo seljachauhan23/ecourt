@@ -1,0 +1,254 @@
+{% extends 'citizen_header.html' %}
+
+{% block content %}
+<div class="lawyers-container">
+    <div class="dashboard-header">
+        <h1>Lawyers</h1>
+    </div>
+
+    <div class="formcontainer">
+        <div class="form-section">
+            <h2 class="form-title">Lawyers List</h2>
+
+            <!-- Search Bar -->
+            <div class="input-container">
+                <input type="text" id="search-bar" placeholder="Search by name or email..." onkeyup="filterLawyers()">
+            </div>
+
+            <table class="lawyers-table">
+                <thead>
+                    <tr>
+                        <th class="center">Lawyer Name</th>
+                        <th class="center">Email</th>
+                        <th class="center">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="lawyers-table-body">
+                    {% for lawyer in lawyers %}
+                    <tr>
+                        <td class="center">{{ lawyer.user.full_name }}</td>
+                        <td class="center">{{ lawyer.user.email }}</td>
+                        <td class="center">
+                            <button class="view-btn" onclick="viewLawyerDetails('{{ lawyer.user.full_name }}', '{{ lawyer.user.email }}', '{{ lawyer.user.contact_number }}', '{{ lawyer.user.address }}', '{{ lawyer.license_number }}', '{{ lawyer.law_firm }}')">View</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Lawyer Details Popup -->
+    <div id="lawyer-details-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h2>Lawyer Details</h2>
+            <div id="lawyer-details"></div>
+            <button onclick="closePopup()" class="close-popup-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+#search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Table Styles */
+.lawyers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.lawyers-table th, .lawyers-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center; /* Center-align headers and content */
+}
+
+.lawyers-table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+/* Center-align button */
+.center {
+    text-align: center;
+}
+
+/* View Button */
+.view-btn {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.view-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: left;
+    animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.close-popup-btn {
+    margin-top: 20px;
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.close-popup-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    .view-btn {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .close-popup-btn {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}
+</style>
+
+<script>
+function viewLawyerDetails(name, email, contact, address, license, firm) {
+    var details = `
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Contact Number:</strong> ${contact}</p>
+        <p><strong>Address:</strong> ${address}</p>
+        <p><strong>License Number:</strong> ${license}</p>
+        <p><strong>Law Firm:</strong> ${firm}</p>
+    `;
+    document.getElementById('lawyer-details').innerHTML = details;
+    document.getElementById('lawyer-details-popup').style.display = 'flex';
+}
+
+function closePopup() {
+    document.getElementById('lawyer-details-popup').style.display = 'none';
+}
+
+function filterLawyers() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('search-bar');
+    filter = input.value.toLowerCase();
+    table = document.getElementById('lawyers-table-body');
+    tr = table.getElementsByTagName('tr');
+
+    for (i = 0; i < tr.length; i++) {
+        tdName = tr[i].getElementsByTagName('td')[0];
+        tdEmail = tr[i].getElementsByTagName('td')[1];
+        if (tdName || tdEmail) {
+            txtValueName = tdName.textContent || tdName.innerText;
+            txtValueEmail = tdEmail.textContent || tdEmail.innerText;
+            if (txtValueName.toLowerCase().indexOf(filter) > -1 || txtValueEmail.toLowerCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+}
+</script>
+
+{% endblock %}

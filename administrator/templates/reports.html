@@ -1,0 +1,155 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Reports Dashboard</h1>
+</div>
+
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "In God we trust. All others must bring data." – W. Edwards Deming
+</div>
+
+<div class="formcontainer">
+    <!-- Left Section for Illustration -->
+    <div class="gif-section">
+        <img src="/media/report.gif" alt="Reports Illustration">
+    </div>
+
+    <!-- Right Section for Reports Options -->
+    <div class="form-section">
+        <h2 class="form-title">Generate Data Reports</h2>
+        <div class="button-container">
+            <form id="report-form" method="post">
+                {% csrf_token %}
+                <select name="report_type" id="report-type" required>
+                    <option value="" disabled selected>Select Report Type</option>
+                    <option value="cases">Cases Data</option>
+                    <option value="lawyers">Lawyers Data</option>
+                    <option value="judges">Judges Data</option>
+                    <option value="citizens">Citizens Data</option>
+                    <option value="caseTypes">Case Types Data</option>
+                    <option value="monthlyCases">Monthly Cases Data</option>
+                    <option value="hearings">Hearings Data</option>
+                    <option value="documents">Documents Data</option>
+                    <option value="payments">Payments Data</option>
+                </select>
+                <button type="submit" class="chart-button">Download Report</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* General Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-header {
+    text-align: center;
+    padding: 20px;
+    background-color: #1e3c72;
+    color: white;
+}
+
+.formcontainer {
+    display: flex;
+    flex-direction: row;
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.gif-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.gif-section img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.form-section {
+    flex: 1;
+    padding: 20px;
+}
+
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+button {
+    padding: 10px;
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #3e5c92;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        flex-direction: column;
+    }
+
+    .gif-section {
+        display: none;
+    }
+
+    .formcontainer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('/media/reports.gif') no-repeat center center/cover;
+        opacity: 0.1;
+        z-index: -1;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,279 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>case Management</h1>
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Cases</h2>
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search cases...based on username or full name" onkeyup="filtercases()">
+        <table class="cases-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Case Number</th>
+                    <th style="text-align: center;">title</th>
+                    <th style="text-align: center;">Type</th>
+                    <th style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cases-table-body">
+                {% for case in cases %}
+                <tr>
+                    <td style="text-align: center;">{{ case.case_number }}</td>
+                    <td style="text-align: center;">{{ case.case_title }}</td>
+                    <td style="text-align: center;">{{ case.case_type }}</td>
+                    <td style="text-align: center;">
+                        <button class="delete-btn" onclick="showDeletePopup('{{ case.id }}')">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete case Popup -->
+<div id="delete-case-popup" class="popup">
+    <div class="popup-content">
+        <h2>Delete case</h2>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" id="case-id" name="case_id" />
+            <div class="input-container">
+                <label for="reason">Reason for Deletion:</label>
+                <textarea id="reason" name="reason" required></textarea>
+            </div>
+            <div class="submit-btn-container">
+                <button type="submit" class="submit-btn">Delete</button>
+            </div>
+        </form>
+        <button onclick="closePopup('delete-case-popup')" class="close-btn">Close</button>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Cases Table */
+.cases-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cases-table th, .cases-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.cases-table th {
+   background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Delete Button */
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.input-container {
+    margin-bottom: 20px;
+}
+
+.input-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-container textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.submit-btn-container {
+    text-align: center;
+}
+
+.submit-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #c0392b;
+}
+
+/* Close Button */
+.close-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+}
+
+.close-btn:hover {
+    background: #c0392b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+
+    .cases-table th, .cases-table td {
+        padding: 8px;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+}
+</style>
+
+<script>
+    // Function to filter cases based on search input
+    function filtercases() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById('search-bar');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('cases-table-body');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            tr[i].style.display = 'none';
+            td = tr[i].getElementsByTagName('td');
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Function to show the delete case popup
+    function showDeletePopup(caseId) {
+        document.getElementById('case-id').value = caseId;
+        document.getElementById('delete-case-popup').style.display = 'flex';
+    }
+
+    // Function to close a popup
+    function closePopup(popupId) {
+        document.getElementById(popupId).style.display = 'none';
+    }
+</script>
+{% endblock %}

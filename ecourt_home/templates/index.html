@@ -1,0 +1,741 @@
+{% extends 'header_footer.html' %}
+
+{% block content %}
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eCourt - Revolutionizing Court Management</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(to bottom right, #003366, #004080);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/media/home_hero.png') center/cover no-repeat;
+            opacity: 0.4;
+            z-index: 1;
+        }
+        .hero-section .content {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-section h1 {
+            font-size: 3.5rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+        .hero-section p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .btn-primary {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-size: 1.2rem;
+            color: white; /* Change text color to white */
+            font-family: monospace;
+            height: 60px;
+            width: 250px;
+            text-align: center;
+            
+            border-radius: 50px;
+       
+        }
+        .btn-primary:hover {
+            background-color: #0066cc;
+            transform: scale(1.1);
+        }
+
+        /* Features Section */
+        .features {
+            background-color: #f9f9f9;
+            padding: 60px 0;
+            text-align: center;
+            border-radius: 20px;
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #003366;
+            font-family: 'Merriweather', serif;
+            text-align: center;
+        }
+        .feature-card {
+            margin: 20px;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .feature-card i {
+            font-size: 3rem;
+            color: #004080;
+        }
+        .feature-card h4 {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #004080;
+            font-weight: bold;
+        }
+        .feature-card p {
+            color: #555;
+        }
+
+    .counter-section {
+        background-color: #f9f9f9;
+        padding: 60px 0;
+        border-radius: 15px;
+        margin: 2% 5%;
+        text-align: center;
+    }
+
+    .counter-box {
+        margin: 20px 0;
+        padding: 30px;
+        border-radius: 10px;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .counter-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+        margin: 10px 0;
+        font-size: 2.5rem;
+        color: #003366;
+        font-weight: bold;
+    }
+
+    .counter-box p {
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        font-weight: bold;
+        color: #004080;
+    }
+
+    .section-description {
+        font-size: 1.2rem;
+        color: #777;
+        margin-bottom: 40px;
+    }
+
+        /* How It Works Section */
+        .how-it-works {
+            background-color: #f9f9f9;
+            padding: 60px 0;
+            text-align: center;
+            border-radius: 20px;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-top:2%;
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 0px;
+            color: #003366;
+            font-family: 'Merriweather', serif;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: #f9f9f9;
+            padding: 60px 0;
+            text-align: center;
+            border-radius: 20px;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-top:2%;
+        }
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #003366;
+            font-family: 'Merriweather', serif;
+        }
+        .testimonial-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .testimonial-card p {
+            font-style: italic;
+        }
+        .testimonial-card h4 {
+            font-weight: bold;
+            color: #003366;
+            margin-top: 20px;
+        }
+         .testimonial-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        background-color: #f9f9f9;
+        padding: 60px;
+        border-radius: 20px;
+        margin-left: 5%;
+        margin-right: 5%;
+        display: flex;
+        align-items: center; /* Center vertically */
+        gap: 40px; /* Space between FAQ and image */
+    }
+
+    /* FAQ Content */
+    .faq-content {
+        flex: 1; /* Takes up the available space */
+        margin-left: 10%;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+        color: #003366;
+        text-align: left;
+        font-family: 'Merriweather', serif;
+    }
+
+    .faq-item {
+        margin-bottom: 20px;
+    }
+
+    .faq-item h4 {
+        font-size: 1.5rem;
+        color: #004080;
+        cursor: pointer;
+        font-family: 'Merriweather', serif;
+    }
+
+    .faq-item p {
+        display: none;
+        color: #555;
+        font-size: 1.2rem;
+        margin-top: 10px;
+    }
+
+    .faq-item.active p {
+        display: block;
+    }
+
+    .faq-item i {
+        transition: transform 0.3s ease;
+    }
+
+    .faq-item.active i {
+        transform: rotate(180deg);
+    }
+
+    .explore-more-button {
+        text-align: left;
+        margin-top: 20px;
+    }
+
+    .explore-more-button .btn {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+        font-size: 1.2rem;
+        color: white; /* Change text color to white */
+        font-family: monospace;
+        height: 60px;
+        width: 250px;
+        text-align: center;
+       
+    }
+
+    .explore-more-button .btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* FAQ Image */
+    .faq-image {
+        flex: 1; /* Takes up the available space */
+        text-align: center;
+        margin-right: 20px;
+    }
+
+    .faq-image img {
+        max-width: 100%; /* Ensure the image scales properly */
+        height: 100%;
+        {% comment %} border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); {% endcomment %}
+    }
+
+        /* Contact Us Form */
+        
+        .contact-form {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #001f3f, #0056b3);
+            color: white;
+            margin: 60px 80px;
+            border-radius: 20px;
+            margin-top: 1%;
+        }
+        
+         h2 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+        
+        .contact-form .form-flex-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        
+        .contact-form .form-part {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .contact-form input, 
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            border-radius: 40px;
+            resize: none;
+        }
+        
+        .contact-form textarea {
+            flex-grow: 1; /* Ensures the message field fills the remaining space */
+            height: 60px;
+            border-radius: 10px;
+        }
+        
+        .contact-form .form-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .contact-form button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color:rgb(179, 176, 0);
+            {% comment %} background: linear-gradient(135deg, #007bff, #0056b3); {% endcomment %}
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: white;
+            font-family: monospace;
+            transition: all 0.3s ease;
+            margin-left: -2px;
+            width: 100%;
+        }
+        
+        .contact-form button:hover {
+            background-color: rgb(215, 222, 228);
+            color: #0066cc;
+        }
+        
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1.5s ease-out;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero-section fade-in">
+    <div class="content">
+        <h1>Welcome to eCourt</h1>
+        <p>Your one-stop platform for seamless court case management.</p>
+        <a href="aboutus" class="btn btn-primary">Explore eCourt</a>
+    </div>
+</section>
+<br>
+<!-- Features Section -->
+<h2>Our Features</h2>
+<section id="features" class="features fade-in">
+    <div class="container">
+       
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-gavel"></i>
+                    <h4>Case Management</h4>
+                    <p>Streamline and track all your court cases in one place.</p>
+                </div>
+            </div>
+           <div class="col-md-4">
+    <div class="feature-card">
+        <i class="fas fa-shield-alt"></i>
+        <h4>Credentials/Evidence Security</h4>
+        <p>Securely manage legal documents.</p>
+    </div>
+</div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-search"></i>
+                    <h4>Case Insights</h4>
+                    <p>Gain insights into case trends and outcomes.</p>
+                </div>
+            </div>
+            <br />
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-clock"></i>
+                    <h4>24/7 Access</h4>
+                    <p>Access your cases and documents anytime, anywhere.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h4>Real-time Notifications</h4>
+                    <p>"Instant case updates via email "</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-lock"></i>
+                    <h4>Secure Transactions</h4>
+                    <p>Your data is encrypted for privacy and security.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Counter Section -->
+ <br>
+<h2 class="section-title">Platform Achievements</h2>
+<section id="counter" class="counter-section fade-in">
+    <div class="container">
+
+        <div class="row text-center">
+            <!-- Counter 1: Total Users -->
+            <div class="col-md-4">
+                <div class="counter-box">
+                    <i class="fas fa-users fa-3x" style="color: #004080;"></i>
+                    <h3 class="counter" data-count="{{ total_users }}">0</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+            <!-- Counter 2: Total Cases -->
+            <div class="col-md-4">
+                <div class="counter-box">
+                    <i class="fas fa-briefcase fa-3x" style="color: #004080;"></i>
+                    <h3 class="counter" data-count="{{ total_cases }}">0</h3>
+                    <p>Total Cases</p>
+                </div>
+            </div>
+            <!-- Counter 3: Total Documents -->
+            <div class="col-md-4">
+                <div class="counter-box">
+                    <i class="fas fa-file-alt fa-3x" style="color: #004080;"></i>
+                    <h3 class="counter" data-count="{{ total_documents }}">0</h3>
+                    <p>Total Documents Uploaded</p>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <!-- Counter 4: Total Payments -->
+            <div class="col-md-4">
+                <div class="counter-box">
+                    <i class="fas fa-credit-card fa-3x" style="color: #004080;"></i>
+                    <h3 class="counter" data-count="{{ total_payments }}">0</h3>
+                    <p>Total Payments Processed</p>
+                </div>
+            </div>
+            <!-- Counter 5: Total Verdicts -->
+            <div class="col-md-4">
+                <div class="counter-box">
+                    <i class="fas fa-gavel fa-3x" style="color: #004080;"></i>
+                    <h3 class="counter" data-count="{{ total_verdicts }}">0</h3>
+                    <p>Total Verdicts Given</p>
+                </div>
+            </div>
+            <!-- Counter 6: Total Hearings -->
+            <div class="col-md-4">
+                <div class="counter-box">
+                    <i class="fas fa-calendar-alt fa-3x" style="color: #004080;"></i>
+                    <h3 class="counter" data-count="{{ total_hearings }}">0</h3>
+                    <p>Total Hearings Conducted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- How It Works Section -->
+<h2 class="section-title">How It Works</h2>
+<section id="how-it-works" class="how-it-works">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <h4>1. Register</h4>
+                    <p>Create your account on eCourt to get started with online legal services.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <h4>2. Submit Documents</h4>
+                    <p>Submit your legal documents securely using our easy-to-use platform.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <h4>3. Track Progress</h4>
+                    <p>Monitor your case and receive real-time updates on your legal proceedings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+ <br>
+<h2>What Our Users Say</h2>
+<section id="testimonials" class="testimonials fade-in">
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <img src="/media/lawyer.jpeg" alt="John Doe" class="testimonial-image">
+                    <p>"eCourt has made managing my cases so much easier. The interface is simple, yet powerful!"</p>
+                    <h4>Ms.Rina Shah</h4>
+                    <p>Lawyer</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <img src="/media/citizen.jpeg" alt="Jane Smith" class="testimonial-image">
+                    <p>"I can file my documents from the comfort of my home. A real game-changer!"</p>
+                    <h4>Mr.Ram Vyas</h4>
+                    <p>Citizen</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <img src="/media/judge.jpeg" alt="Judge Mike" class="testimonial-image">
+                    <p>"As a judge, I can now easily track cases and hearings. The platform saves me so much time!"</p>
+                    <h4>Mr.Chandresh Varma</h4>
+                    <p>Judge</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<br>
+<h2>Frequently Asked Questions</h2>
+<section id="faq" class="faq-section">
+    <!-- FAQ Content -->
+    <div class="faq-content">
+
+        <div class="faq-item">
+            <h4><i class="fas fa-chevron-down"></i> What is eCourt?</h4>
+            <p>
+                eCourt is an online platform designed to simplify court processes, enabling users to manage cases, hearings, and filings efficiently.
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h4><i class="fas fa-chevron-down"></i> How can I register?</h4>
+            <p>
+                Register by filling out the signup form for your role (Citizen, Lawyer, Judge, or Admin) with the required details.
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h4><i class="fas fa-chevron-down"></i> Can I file a case online?</h4>
+            <p>
+                Yes, citizens can file cases online by submitting the necessary documents through the eCourt platform.
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h4><i class="fas fa-chevron-down"></i> Is my data secure?</h4>
+            <p>
+                eCourt ensures the safety of your data using encryption and secure systems to protect personal and legal information.
+            </p>
+        </div>
+
+        <div class="faq-item">
+            <h4><i class="fas fa-chevron-down"></i> Can I track my case status?</h4>
+            <p>
+                Yes, users can track the progress of their cases and upcoming hearings through their personalized dashboard.
+            </p>
+        </div>
+
+        <!-- Explore More Button -->
+        <div class="explore-more-button">
+            <a href="faq" class="btn btn-primary">Explore More</a>
+        </div>
+    </div>
+
+    <!-- FAQ Image -->
+    <div class="faq-image" style="margin-right: 10%;">
+        <img src="/media/faq.gif" alt="FAQ Image">
+    </div>
+</section>
+
+ <!-- Contact Us Section -->
+  <br>
+ <h2>Contact Us Immediately</h2>
+<section id="contact" class="contact-form">
+    <div class="container">
+       
+        <form action="{% url 'contactus' %}" method="post">
+            {% csrf_token %}
+            <div class="form-flex-container">
+                <!-- First Part: Name, Email, Subject -->
+                <div class="form-part">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <input type="text" name="subject" placeholder="Your Subject" required>
+                </div>
+                <!-- Second Part: Message -->
+                <div class="form-part">
+                    <textarea name="message" rows="8" placeholder="Your Message" required></textarea>
+                </div>
+            </div>
+            <!-- Button -->
+            <div class="form-button-container">
+                <button type="submit">Send Message</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Custom JS -->
+<script>
+    // Add 'loaded' class to body once content is loaded
+    {% comment %} window.addEventListener('load', () => {
+        document.body.classList.add('loaded');
+    });
+
+    // FAQ toggle
+    const faqItems = document.querySelectorAll('.faq-item h4');
+    faqItems.forEach(item => {
+        item.addEventListener('click', () => {
+            item.parentElement.classList.toggle('active');
+        });
+    }); {% endcomment %}
+
+     // Toggle FAQ items
+     const faqItems = document.querySelectorAll('.faq-item h4');
+
+     faqItems.forEach(item => {
+         item.addEventListener('click', () => {
+             const parent = item.parentElement;
+ 
+             // Close all other FAQs
+             document.querySelectorAll('.faq-item').forEach(faq => {
+                 if (faq !== parent) {
+                     faq.classList.remove('active');
+                 }
+             });
+ 
+             // Toggle the clicked FAQ
+             parent.classList.toggle('active');
+         });
+     });
+
+      // Counter Animation Logic
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200; // Animation speed in ms
+
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-count');
+                const count = +counter.innerText;
+
+                const increment = target / speed;
+
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(updateCount, 100);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCount();
+        });
+    });
+
+</script>
+
+</body>
+</html>
+{% endblock %}

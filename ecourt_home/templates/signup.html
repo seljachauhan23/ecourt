@@ -1,0 +1,311 @@
+{% extends 'header_footer.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for eCourt</title>
+    <style>
+        /* General Body and Layout */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .content-wrapper {
+            flex: 1;
+        }
+
+        .formcontainer {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.9);
+            margin: 30px auto;
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f7f7f7;
+        }
+
+        .image-section img {
+            max-width: 150%;
+            height: 100%;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            text-align: center;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .quote {
+            font-size: 1rem;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input, select, button, textarea {
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #0056b3, #007bff);
+        }
+
+        button[type='submit'] {
+            color: white;
+        }
+
+        .error-messages {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fce4e4; /* Softer red background */
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            color: #a94442; /* Darker red text for better readability */
+            font-size: 1rem;
+        }
+
+        .error-item {
+            margin-bottom: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .error-item::before {
+            content: '⚠️'; /* Add a warning emoji or icon */
+            color: #a94442;
+            font-size: 1.2rem;
+        }
+
+        .error-messages ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .error-messages li {
+            margin: 5px 0;
+        }
+
+        .profile-picture-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+        }
+
+        .messages {
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 10px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-image: url('/media/signup.gif');
+                background-size: cover;
+                background-position: center;
+            }
+
+            .formcontainer {
+                flex-direction: column;
+                background: rgba(255, 255, 255, 0.85);
+                padding: 20px;
+            }
+
+            .image-section {
+                display: none;
+            }
+
+            .form-section {
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="formcontainer">
+            <!-- Left Side with Image -->
+            <div class="image-section">
+                <img src="/media/signup.gif" alt="Animated Legal Image">
+            </div>
+
+            <!-- Right Side with Form -->
+            <div class="form-section">
+                <h2>Join the Future of Legal Services</h2>
+                <p class="quote">"Bringing justice to the digital age - Register now to access eCourt services"</p>
+
+                <!-- Error Messages -->
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <!-- Error Messages -->
+                {% if errors %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <div class="message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form action="{% url 'signup' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="text" name="contact_number" placeholder="Contact Number" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <textarea name="address" placeholder="Address" rows="4" required></textarea>
+
+                    <!-- Profile Picture Upload -->
+                    <input type="file" name="profile_picture" accept="image/*" onchange="previewProfilePicture(event)" required>
+                    <img id="profilePicturePreview" class="profile-picture-preview" src="#" alt="Profile Picture Preview" style="display: none;">
+
+                    <select id="register_as" name="register_as" required>
+                        <option value="">Register As</option>
+                        <option value="LAWYER">Lawyer</option>
+                        <option value="CITIZEN">Citizen</option>
+                    </select>
+
+                    <!-- Lawyer-Specific Fields -->
+                    <div id="lawyerFields" class="conditional-fields">
+                        <input type="text" name="License_number" placeholder="License Number">
+                        <input type="text" name="Law_firm" placeholder="Law Firm">
+                    </div>
+
+                    <!-- Citizen-Specific Fields -->
+                    <div id="citizenFields" class="conditional-fields">
+                        <select name="National_id_type">
+                            <option value="">Select National ID Type</option>
+                            <option value="PASSPORT">Passport</option>
+                            <option value="AADHAAR">Aadhaar</option>
+                            <option value="VOTER_ID">Voter ID</option>
+                            <option value="DRIVING_LICENSE">Driver's License</option>
+                        </select>
+                        <input type="text" name="National_id_number" placeholder="National ID Number">
+                    </div>
+
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerAs = document.getElementById('register_as');
+            const lawyerFields = document.getElementById('lawyerFields');
+            const citizenFields = document.getElementById('citizenFields');
+
+            lawyerFields.style.display = 'none';
+            citizenFields.style.display = 'none';
+
+            registerAs.addEventListener('change', () => {
+                const role = registerAs.value;
+                lawyerFields.style.display = role === 'LAWYER' ? 'block' : 'none';
+                citizenFields.style.display = role === 'CITIZEN' ? 'block' : 'none';
+            });
+        });
+
+        function previewProfilePicture(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('profilePicturePreview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>
+{% endblock %}

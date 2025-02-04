@@ -1,0 +1,228 @@
+{% extends 'header_footer.html' %}
+
+{% block content %}
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eCourt - FAQ</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts for improved typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 1s ease-out;
+        }
+
+   .hero-section {
+    background: linear-gradient(to bottom right, #003366, #004080);
+    color: white;
+    padding: 50px 0; /* Reduced height */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px; /* Ensures consistent minimum height */
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://source.unsplash.com/1600x900/?law,justice') center/cover no-repeat;
+    opacity: 0.5;
+    z-index: 1;
+    filter: blur(10px);
+}
+
+.hero-section .content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem; /* Adjusted for smaller height */
+    font-family: 'Merriweather', serif;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px; /* Reduced margin */
+}
+
+.hero-section p {
+    font-size: 1rem; /* Reduced font size */
+    opacity: 0.9;
+    margin-bottom: 0; /* Optional: remove additional spacing */
+}
+
+        .faq-section {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .faq-item {
+            background-color: #f7f7f7;
+            margin: 10px 0;
+            padding: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            animation: fadeInUp 1.4s ease-out;
+        }
+        .faq-item:hover {
+            background-color: #e2e2e2;
+        }
+        .faq-item i {
+            margin-right: 10px;
+            color: #003366;
+        }
+        .faq-answer {
+            display: none;
+            padding-top: 10px;
+            background-color: #f0f0f0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .cta-btn {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 30px;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            animation: fadeInUp 2s ease-out;
+            font-family: monospace;
+        }
+
+        .cta-btn:hover {
+            background-color: #004080;
+            text-decoration: none;
+            color: white;
+            animation: fadeInUp 2s ease-out;
+        }
+
+       
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .faq-item {
+                padding: 15px;
+            }
+
+            .cta-btn {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="content">
+         <img src="/media/logo.png" alt="eCourt Logo" style="width: 120px; height: auto; margin-bottom: 20px;">
+        <h1>Frequently Asked Questions</h1>
+        <p>Get the answers to your most common questions about the eCourt platform.</p>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <div class="faq-item" onclick="toggleAnswer(this)">
+            <i class="fas fa-question-circle"></i>
+            <strong>How do I register as a Citizen?</strong>
+            <div class="faq-answer">
+                <p>To register as a citizen, visit the registration page, provide your personal details, and create an account.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleAnswer(this)">
+            <i class="fas fa-question-circle"></i>
+            <strong>What is the role of a Judge in the eCourt system?</strong>
+            <div class="faq-answer">
+                <p>Judges are responsible for overseeing cases, delivering judgments, and ensuring the fair administration of justice.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleAnswer(this)">
+            <i class="fas fa-question-circle"></i>
+            <strong>How can I submit a case?</strong>
+            <div class="faq-answer">
+                <p>To submit a case, you must be logged in. After logging in, go to the "Submit Case" section and fill in the required details.</p>
+            </div>
+        </div>
+
+        <div class="faq-item" onclick="toggleAnswer(this)">
+            <i class="fas fa-question-circle"></i>
+            <strong>How is my personal information protected?</strong>
+            <div class="faq-answer">
+                <p>We implement stringent security measures to ensure your personal data is protected and securely stored.</p>
+            </div>
+        </div>
+
+        <!-- Call to Action Button -->
+        <a href="contactus" class="cta-btn">Contact Support</a>
+    </div>
+</section>
+
+
+
+<!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- JavaScript for Accordion functionality -->
+<script>
+    function toggleAnswer(element) {
+        const answer = element.querySelector('.faq-answer');
+        if (answer.style.display === 'block') {
+            answer.style.display = 'none';
+        } else {
+            answer.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
+{%endblock%}

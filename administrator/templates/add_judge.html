@@ -1,0 +1,236 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Add Judge</h1>
+</div>
+
+<div class="form_container">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "Justice is the sum of all moral duty." – William Godwin
+</div>
+
+<div class="formcontainer">
+    <!-- Left Section for GIF -->
+    <div class="gif-section">
+        <img src="/media/signup.gif" alt="Animated Judge Illustration">
+    </div>
+
+    <!-- Right Section for Form -->
+    <div class="form-section">
+        <!-- Add Judge Title Above Form -->
+        <h2 class="form-title">Add a New Judge</h2>
+
+        <form action="{% url 'add_judge' %}" method="POST">
+            {% csrf_token %}
+
+            <!-- Input Fields -->
+            <div class="input-container">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-container">
+                <input type="text" name="full_name" placeholder="Full Name" required>
+            </div>
+
+            <div class="input-container">
+                <input type="email" name="email" placeholder="Email Address" required>
+            </div>
+
+            <div class="input-container">
+                <input type="text" name="contact_number" placeholder="Contact Number" required>
+            </div>
+
+            <div class="input-container">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <div class="input-container">
+                <input type="text" name="court" placeholder="Court Name" required>
+            </div>
+
+            <div class="input-container">
+                <textarea name="address" placeholder="Address" rows="3" required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="button-container">
+                <button type="submit">Add Judge</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    position: relative;
+    max-height: 70vh; /* Restrict height for scrollability */
+    overflow: hidden;
+}
+
+/* Left Section for GIF */
+.gif-section {
+    flex: 1;
+    background-color: #f4f7f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.gif-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Right Section for Form */
+.form-section {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    overflow-y: auto; /* Enable scrolling for form */
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Input Fields */
+.input-container {
+    margin-bottom: 15px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: none;
+}
+
+/* Button Styles */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        flex-direction: column;
+    }
+
+    .gif-section {
+        display: none;
+    }
+
+    .formcontainer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('/media/signup.gif') no-repeat center center/cover;
+        opacity: 0.1;
+        z-index: -1;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+}
+
+.messages {
+    margin: 20px auto;
+    max-width: 900px;
+    padding: 10px;
+}
+
+.message {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.message.success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+</style>
+{% endblock %}

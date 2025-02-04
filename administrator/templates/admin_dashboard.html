@@ -1,0 +1,323 @@
+{% if request.session.role != "ADMIN" %}
+<script>
+    window.location.href = "{% url 'login' %}";
+</script>
+{% endif %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/media/logo.ico" type="image/x-icon">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+        a{
+            text-decoration: none;
+        }
+
+        /* Header Section */
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            padding: 2px 14px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .dashboard-header h1 {
+            font-size: 3rem;
+            margin: 0;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .dashboard-header p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            opacity: 0.9;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .dashboard-header .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #ffd700;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            animation: logoFadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes logoFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Logout Button */
+        .logout-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2;
+        }
+
+        .logout-button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: #e60000;
+        }
+
+        .logout-button:active {
+            background: #cc0000;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        h3 {
+            margin: 10px 0;
+        }
+
+        p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .welcome-message {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message h2 {
+            font-size: 2rem;
+            color:rgb(219, 182, 33);
+            margin: 0;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .dashboard-content {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .dashboard-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 200px;
+        }
+
+        .dashboard-link {
+            display: block;
+            margin-top: 10px;
+            color: #1e3c72;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dashboard-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <img src="/media/logo.png" alt="Logo" class="logo">
+        <div class="logout-container">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button">Logout</button>
+            </form>
+        </div>
+        <h1>Admin Dashboard</h1>
+        <p>Manage all the functionalities efficiently</p>
+    </div>
+
+    <div class="welcome-message">
+        <h2>Welcome, {{ request.user.username }}!</h2>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Pre-existing and newly added cards -->
+        <div class="dashboard-card">
+            <div class="card-icon">👤</div>
+            <h3>Total Users</h3>
+            <p>{{ total_users }}</p>
+        </div>
+    <a href="{% url 'case_status' %}">
+        <div class="dashboard-card">
+            <div class="card-icon">⚖️</div>
+            <h3>Total Cases</h3>
+            <p>{{ total_cases }}</p>
+        </div>
+    </a>
+    <a href="{% url 'add_judge' %}">
+        <div class="dashboard-card">
+            <div class="card-icon">👨‍⚖️</div>
+            <h3>Add Judge</h3>
+            <p>Add new judges</p>
+        </div>
+    </a>
+    <a href="{% url 'lawyer_approve_reject' %}">
+        <div class="dashboard-card">
+            <div class="card-icon">✍️</div>
+            <h3>Requested Lawyers</h3>
+            <p>Approve or deny requests</p>
+        </div>
+    </a>
+    <a href="{% url 'judges_management' %}">
+        <div class="dashboard-card">
+            <div class="card-icon">👨‍⚖️</div>
+            <h3>Judges Management</h3>
+            <p>Administer judges' details</p>
+        </div>
+    </a>
+    <a href="{% url 'lawyers_management' %}">
+        <div class="dashboard-card">
+            <div class="card-icon">⚖️</div>
+            <h3>Lawyers Management</h3>
+            <p>Oversee lawyers' profiles</p>
+        </div>
+    </a>
+    <a href="{% url 'citizens_management' %}">
+            <div class="dashboard-card">
+                <div class="card-icon">👥</div>
+                <h3>Citizens Management</h3>
+                <p>Manage citizen details</p>
+            </div>
+        </a>
+    
+        <a href="{% url 'case_management' %}">
+            <div class="dashboard-card">
+                <div class="card-icon">📂</div>
+                <h3>Case Management</h3>
+                <p>View and update case statuses</p>
+            </div>
+        </a>
+        
+        <a href="{% url 'analytics_dashboard' %}">
+            <div class="dashboard-card">
+                <div class="card-icon">📊</div>
+                <h3>Analytics</h3>
+                <p>Analyze case trends</p>
+            </div>
+        </a>
+        <a href="{% url 'reports_dashboard' %}">
+            <div class="dashboard-card">
+                <div class="card-icon">📄</div>
+                <h3>Reports</h3>
+                <p>Generate detailed reports</p>
+            </div>
+        </a>
+        <!-- Contact Us Details Card -->
+        <a href="{% url 'contact_us_reply' %}">
+            <div class="dashboard-card">
+            <div class="card-icon">📧</div>
+            <h3>Contact Us</h3>
+            <p>Get in touch with support</p>
+            </div>
+        </a>
+
+        <!-- View Payments Card -->
+        <a href="{% url 'view_payments' %}">
+            <div class="dashboard-card">
+            <div class="card-icon">💳</div>
+            <h3>View Payments</h3>
+            <p>Check payment history</p>
+            </div>
+        </a>
+
+        <a href="{% url 'profile' %}">
+            <div class="dashboard-card">
+                <div class="card-icon">👤</div>
+                <h3>Profile</h3>
+                <p>View and edit your profile</p>
+            </div>
+        </a>
+    </div>
+</body>
+</html>

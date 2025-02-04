@@ -1,0 +1,291 @@
+{% extends 'header_footer.html' %}
+
+{% block content %}
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eCourt - Privacy Policy</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts for improved typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            animation: fadeIn 1s ease-out;
+        }
+
+      .hero-section {
+    background: linear-gradient(to bottom right, #003366, #004080);
+    color: white;
+    padding: 50px 0; /* Reduced height */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px; /* Ensures consistent minimum height */
+}
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://source.unsplash.com/1600x900/?law,justice') center/cover no-repeat;
+    opacity: 0.5;
+    z-index: 1;
+    filter: blur(10px);
+}
+
+.hero-section .content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem; /* Adjusted for smaller height */
+    font-family: 'Merriweather', serif;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px; /* Reduced margin */
+}
+
+.hero-section p {
+    font-size: 1rem; /* Reduced font size */
+    opacity: 0.9;
+    margin-bottom: 0; /* Optional: remove additional spacing */
+}
+
+
+        .content-section {
+            padding: 60px 0;
+            background-color: white;
+        }
+
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #003366;
+            margin-bottom: 30px;
+            font-family: 'Merriweather', serif;
+            display: flex;
+            align-items: center;
+            animation: fadeInUp 1.4s ease-out;
+        }
+
+        .content-section h2 i {
+            margin-right: 10px;
+            color: #0066cc;
+        }
+
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+            animation: fadeInUp 1.6s ease-out;
+        }
+
+        .content-section ul {
+            font-size: 1.1rem;
+            color: #555;
+            margin-left: 20px;
+            list-style-type: square;
+            animation: fadeInUp 1.8s ease-out;
+        }
+
+        .cta-btn {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 30px;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            animation: fadeInUp 2s ease-out;
+            font-family: monospace;
+        }
+
+        .cta-btn:hover {
+            background-color: #004080;
+            text-decoration: none;
+            color: white;
+            animation: fadeInUp 2s ease-out;
+        }
+
+        
+
+        /* Card Layout for Content */
+        .card {
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            animation: fadeInUp 2.2s ease-out;
+        }
+
+        .card-header {
+            background-color: #003366;
+            color: white;
+            font-size: 1.4rem;
+            font-family: 'Merriweather', serif;
+            text-transform: uppercase;
+            padding: 20px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-body ul {
+            margin-left: 25px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+
+            .content-section h2 {
+                font-size: 2rem;
+            }
+
+            .cta-btn {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="content">
+         <img src="/media/logo.png" alt="eCourt Logo" style="width: 120px; height: auto; margin-bottom: 20px;">
+        <h1>Privacy Policy</h1>
+        <p>Your privacy is of utmost importance to us. Please read our Privacy Policy to understand how we collect, use, and protect your information.</p>
+    </div>
+</section>
+
+<!-- Privacy Policy Content -->
+<section class="content-section">
+    <div class="container">
+        <!-- Card for Introduction -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-user-shield"></i> Introduction
+            </div>
+            <div class="card-body">
+                <p>At eCourt, we are committed to protecting your privacy. This Privacy Policy outlines how we collect, use, and safeguard your personal information when you use our platform. By accessing or using eCourt, you consent to the practices described in this policy.</p>
+            </div>
+        </div>
+
+        <!-- Card for Information We Collect -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-database"></i> Information We Collect
+            </div>
+            <div class="card-body">
+                <p>We collect personal information that you provide when creating an account, submitting forms, or interacting with the platform. This may include:</p>
+                <ul>
+                    <li>Personal Identification (Name, Email, Address)</li>
+                    <li>Login credentials (Username, Password)</li>
+                    <li>Usage Data (Interactions on the platform)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card for How We Use Your Information -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cogs"></i> How We Use Your Information
+            </div>
+            <div class="card-body">
+                <p>Your information is used to provide you with access to the platform, respond to your inquiries, and improve our services. We may use your data for:</p>
+                <ul>
+                    <li>Providing platform features and support</li>
+                    <li>Personalizing your experience</li>
+                    <li>Sending updates or notifications</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card for Data Security -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-lock"></i> Data Security
+            </div>
+            <div class="card-body">
+                <p>We take the security of your personal information seriously. We implement industry-standard security measures to protect your data from unauthorized access, alteration, or destruction.</p>
+            </div>
+        </div>
+
+        <!-- Card for Your Rights -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-gavel"></i> Your Rights
+            </div>
+            <div class="card-body">
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access the personal data we hold about you</li>
+                    <li>Request correction of inaccurate or incomplete data</li>
+                    <li>Request deletion of your data</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Card for Changes to Privacy Policy -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-exclamation-triangle"></i> Changes to Privacy Policy
+            </div>
+            <div class="card-body">
+                <p>We reserve the right to update or modify this Privacy Policy at any time. Any changes will be posted on this page, and we encourage you to review it periodically to stay informed about how we are protecting your information.</p>
+            </div>
+        </div>
+
+        <!-- Contact Us Button -->
+        <a href="contactus" class="cta-btn">Contact Support</a>
+    </div>
+</section>
+
+<!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+{%endblock%}

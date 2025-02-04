@@ -1,0 +1,305 @@
+{% extends 'admin_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Dismissed Cases</h1>
+</div>
+
+<div class="formcontainer">
+    <div class="form-section">
+        <h2 class="form-title">Dismissed Cases</h2>
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search cases...based on case title or case type" onkeyup="filterCases()">
+        <table class="cases-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Case Number</th>
+                    <th style="text-align: center;">Case Title</th>
+                    <th style="text-align: center;">Case Type</th>
+                    <th style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody id="cases-table-body">
+                {% for case in cases %}
+                <tr>
+                    <td style="text-align: center;">{{ case.case_number }}</td>
+                    <td style="text-align: center;">{{ case.case_title }}</td>
+                    <td style="text-align: center;">{{ case.case_type }}</td>
+                    <td style="text-align: center;">
+                        <button class="view-btn" onclick="toggleCaseDetails('{{ case.id }}')">View</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="case-details-card" class="case-details-card">
+    <div class="formcontainer">
+        <div class="form-section">
+            <h2 class="form-title">Case Information</h2>
+            <div id="case-info-details" class="case-info"></div>
+            <button onclick="closeCaseDetails()" class="close-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Cases Table */
+.cases-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.cases-table th, .cases-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.cases-table th {
+   background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+}
+
+/* Case Details Card (Initially Hidden) */
+.case-details-card {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Case Detailed Info */
+.case-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    flex: 1 1 calc(33% - 20px); /* Each item takes up one-third of the width */
+    min-width: 200px;
+    margin-bottom: 10px;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Add gap between the buttons */
+    margin-top: 20px;
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1; /* Allow buttons to take equal space */
+}
+
+button:hover {
+    background: linear-gradient(to right, #2a5298, #1e3c72);
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Close Button */
+.close-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+}
+
+.close-btn:hover {
+    background: #c0392b;
+}
+
+/* Popup Styles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+
+    .info-item {
+        flex: 1 1 calc(50% - 20px); /* Stacks two items per row on smaller screens */
+    }
+
+    .view-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+
+    .info-item {
+        flex: 1 1 100%; /* Stacks all items vertically on very small screens */
+    }
+}
+</style>
+
+<script>
+    // Function to filter cases based on search input
+    function filterCases() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById('search-bar');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('cases-table-body');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            tr[i].style.display = 'none';
+            td = tr[i].getElementsByTagName('td');
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Function to toggle the case details card and populate information dynamically
+    function toggleCaseDetails(caseId) {
+        var caseData = {
+            {% for case in cases %}
+            "{{ case.id }}": {
+                "caseNumber": "{{ case.case_number }}",
+                "plaintiff": "{{ case.plaintiff.user.full_name }}",
+                "defendant": "{{ case.defendant.user.full_name }}",
+                "caseTitle": "{{ case.case_title }}",
+                "caseType": "{{ case.case_type }}",
+                "status": "{{ case.status }}",
+                "lawyer": "{{ case.assigned_lawyer.user.full_name }}",
+                "lawyer_accepted": "{{ case.lawyer_accepted }}"
+            },
+            {% endfor %}
+        };
+
+        var caseInfo = caseData[caseId];
+        var caseDetailsCard = document.getElementById('case-info-details');
+        caseDetailsCard.innerHTML = ` 
+            <div class="info-item"><strong>Case Number:</strong> ${caseInfo.caseNumber}</div>
+            <div class="info-item"><strong>Plaintiff:</strong> ${caseInfo.plaintiff}</div>
+            <div class="info-item"><strong>Defendant:</strong> ${caseInfo.defendant}</div>
+            <div class="info-item"><strong>Case Title:</strong> ${caseInfo.caseTitle}</div>
+            <div class="info-item"><strong>Case Type:</strong> ${caseInfo.caseType}</div>
+            <div class="info-item"><strong>Status:</strong> ${caseInfo.status}</div>
+            <div class="info-item"><strong>Lawyer:</strong> ${caseInfo.lawyer}</div>
+            <div class="info-item"><strong>Lawyer Accepted:</strong> 
+                <span style="color: ${caseInfo.lawyer_accepted == '1' ? 'green' : 'red'};">
+                    ${caseInfo.lawyer_accepted == '1' ? 'Accepted' : 'Not Accepted'}
+                </span>
+            </div>
+        `;
+        document.getElementById('case-details-card').style.display = 'flex';
+        document.getElementById('case-id').value = caseId;
+    }
+
+    // Function to close the case details card
+    function closeCaseDetails() {
+        document.getElementById('case-details-card').style.display = 'none';
+    }
+</script>
+{% endblock %}

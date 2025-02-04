@@ -1,0 +1,192 @@
+{% extends 'lawyer_header.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Requested Payments</h1>
+</div>
+
+<!-- Inspirational Quote -->
+<div style="text-align: center; margin: 20px 0; font-size: 1.2rem; color: #1e3c72; font-style: italic;">
+    "Justice is the first virtue of social institutions." – John Rawls
+</div>
+
+<div class="formcontainer">
+    <!-- Payment Summary -->
+    <div class="form-section">
+        <h2 class="form-title">Requested Payments</h2>
+
+        <!-- Search Bar -->
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search payments...based on order ID or email" onkeyup="filterPayments()">
+
+        <!-- Payments Table -->
+        <table class="payments-table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Order ID</th>
+                    <th style="text-align: center;">Case Number</th>
+                    <th style="text-align: center;">Email</th>
+                    <th style="text-align: center;">Amount</th>
+                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: center;">Requested At</th>
+                    <th style="text-align: center;">Paid At</th>
+                </tr>
+            </thead>
+            <tbody id="payments-table-body">
+                {% for payment in payments %}
+                <tr class="{% if payment.status == 'Completed' %}completed{% elif payment.status == 'Pending' %}pending{% endif %}">
+                    <td style="text-align: center;">{{ payment.order_id }}</td>
+                    <td style="text-align: center;">{{ payment.case.case_number }}</td>
+                    <td style="text-align: center;">{{ payment.citizen_email }}</td>
+                    <td style="text-align: center;">{{ payment.amount }}</td>
+                    <td style="text-align: center;">
+                        <button class="status-btn" disabled>{{ payment.status }}</button>
+                    </td>
+                    <td style="text-align: center;">{{ payment.requested_at }}</td>
+                    <td style="text-align: center;">{{ payment.paid_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f7f9;
+}
+
+/* Form Container */
+.formcontainer {
+    max-width: 900px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Payments Table */
+.payments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.payments-table th, .payments-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.payments-table th {
+    background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+}
+
+/* Status Button */
+.status-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: not-allowed;
+    color: white;
+}
+
+.completed .status-btn {
+    background-color: green;
+}
+
+.pending .status-btn {
+    background-color: orange;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .formcontainer {
+        padding: 20px;
+    }
+
+    .info-item {
+        flex: 1 1 calc(50% - 20px); /* Stacks two items per row on smaller screens */
+    }
+
+    .view-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+
+    .info-item {
+        flex: 1 1 100%; /* Stacks all items vertically on very small screens */
+    }
+}
+</style>
+
+<script>
+    // Function to filter payments based on search input
+    function filterPayments() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById('search-bar');
+        filter = input.value.toUpperCase();
+        table = document.getElementById('payments-table-body');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            tr[i].style.display = 'none';
+            td = tr[i].getElementsByTagName('td');
+            for (j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    txtValue = td[j].textContent || td[j].innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}
